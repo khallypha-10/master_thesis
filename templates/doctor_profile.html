@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if messages %}
+        <br>
+      <div class="messages">
+         {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+               <i class="fa-solid fa-thumbs-up"></i> {{ message }}
+            </div>
+         {% endfor %}
+      </div>
+{% endif %}
+
+<div class="position-absolute top-15 end-50 ">
+    <a href="{% url 'patients' %}"><button type="button" class="btn btn-outline-primary"> Patients</button></a>
+</div>
+<h1>Doctor - {{ doctor.first_name }}</h1>
+
+<div class="row p-5">
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card" style="width: 51rem;">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item"><b>First Name: </b>{{ doctor.first_name }}</li>
+                  <li class="list-group-item"><b>Last Name:</b> {{ doctor.last_name }}</li>
+                  <li class="list-group-item"><b>Date of Birth:</b> {{ doctor.date_of_birth }}</li>
+                  <li class="list-group-item"><b>Specialization:</b> {{ doctor.specialization }}</li>
+                  <li class="list-group-item"><b>Language:</b> {{ doctor.language }}</li>
+                  <li class="list-group-item"><b>Gender:</B> {{ doctor.gender }}</li>
+                  <li class="list-group-item"><b>Email:</b> {{ doctor.email }}</li>
+                </ul>
+                {% if request.user == doctor.user %}
+                    <div class="card-footer">
+                        <a href="{% url 'doctor' doctor.slug %}"> Update Details</a>
+                        <p><a href="{% url 'password_change' %}" >Change Password</a></p>
+                    </div>
+                {% endif %}
+                {% if request.user == doctor.user %}
+                    <div class="card-footer">
+                        <a href="{% url 'prescribe' user %}"> Prescribe Medication</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

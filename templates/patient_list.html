@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load rest_framework %}
+{% block content %}
+
+
+    <h1>Patients</h1>
+    <ul>
+        {% for patient in patients %}
+        <li>{{ patient.first_name }} {{ patient.last_name }}</li>
+        
+        
+        <a href='{% url "patient-details" patient.slug %}'>View Patient Details</a>
+        {% endfor %}
+    </ul>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center"> {% if patients.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{patients.previous_page_number}}">Previous</a></li>
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>
+          {% endif %}
+          {% for page in patients.paginator.page_range %}
+          <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+          {% endfor %}
+          {% if patients.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{patients.next_page_number}}">Next</a></li>
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link">Next</a>
+          </li>
+          {% endif %}
+        </ul>
+    </nav>
+{% endblock content %}
