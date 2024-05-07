@@ -49,8 +49,9 @@
                    
             {% if request.user == patient.user %}
                 <a href="{% url 'patient' patient.slug %}"> Update Details</a>
-                <p><a href="{% url 'password_change' %}" >Change Password</a></p>
-                <a href="{% url 'generate-pdf' patient.slug %}"><i class="fa-solid fa-share-nodes"></i> </a>
+                <a href="{% url 'password_change' %}" >Change Password</a>
+                <a href="{% url 'generate-pdf' patient.slug %}">PDF <i class="fa-solid fa-file-pdf"></i> </a>
+                <hr>
             {% endif %}
                 
             
