@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load rest_framework %}
+{% block content %}
+
+
+
+    <div class="container">
+        <h1>Patient - {{ patient.first_name }}</h1>
+
+        <div class="row align-items-start">
+        
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>First Name: </b>{{ patient.first_name }}</li>
+                <li class="list-group-item"><b>Last Name:</b> {{ patient.last_name }}</li>
+                <li class="list-group-item"><b>Date of Birth:</b> {{ patient.date_of_birth }}</li>
+                <li class="list-group-item"><b>Language:</b> {{ patient.language }}</li>
+                <li class="list-group-item"><b>Gender:</B> {{ patient.gender }}</li>
+                <li class="list-group-item"><b>Blood Type:</B> {{ patient.blood_type }}</li>
+                <li class="list-group-item"><b>Email:</b> {{ patient.email }}</li>
+                <li class="list-group-item"><b>Address:</b> {{ patient.address }}</li>
+                <li class="list-group-item"><b>Phone Number:</b> {{ patient.phone_number }}</li>
+                <li class="list-group-item"><b>Allergies:</b> {{ patient.allergies }}</li>
+                <li class="list-group-item"><b>Current Medications:</b> {{ patient.current_medications }}</li>
+                <li class="list-group-item"><b>Medical Conditions:</b> {{ patient.medical_conditions }}</li>
+            </ul>
+            <br>
+            <hr>
+            {% if prescriptions %}
+            <h3>Prescriptions</h3>
+            <hr>
+            {% for prescription in prescriptions %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>medication:</b> {{ prescription.medication }}</li>
+                <li class="list-group-item"><b>Prescribed On:</b> {{ prescription.prescribed_on }}</li>
+                <li class="list-group-item"><b>Prescribed By:</b> {{ prescription.prescribed_by }}</li>
+            </ul>
+            <hr>
+            
+            {% endfor %}
+            {% endif %}
+                   
+            {% if request.user == patient.user %}
+                <a href="{% url 'patient' patient.slug %}"> Update Details</a>
+                
+            {% endif %}
+                
+            
+        </div>
+    </div>
+   
+{% endblock content %}

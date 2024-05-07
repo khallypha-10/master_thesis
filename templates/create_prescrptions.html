@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="untree_co-section">
+    <div class="container">
+      <div class="row mb-5">
+        <div class="col-md-12">
+            <br>
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <span class="input-group-text">Please write name and dose</span>
+                    {{form.medication}}                  
+                </div>
+                <label for="exampleDataList" class="form-label">Prescribe for</label>
+                {{form.prescribe_for}}
+                
+                <button type="submit" class="btn btn-primary">Create Prescription</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
