@@ -10,18 +10,18 @@
         <section class="wide-tb-100">
             <div class="container">
                 <h1 class="heading-main">
-                    {% if patients %}
+                    {% if doctors %}
                         <h1 class="heading-main">
             
                         You searched for "{{searched}}"
                 </h1>
 
                 <ul>
-                    {% for patient in patients %}
-                    <li>{{ patient.first_name }} {{ patient.last_name }}</li>
+                    {% for doctor in doctors %}
+                    <li>{{ doctor.first_name }} {{ doctor.last_name }}</li>
                     
             
-                    <a href='{% url "patient-details" patient.slug %}'>View Patient Details</a>
+                    <a href='{% url "doctor-details" doctor.slug %}'>View doctor Details</a>
                     <hr>
                     {% endfor %}
                 </ul>

@@ -221,12 +221,12 @@ class DoctorDelete(generics.RetrieveDestroyAPIView):
 def search(request):
     if request.method == 'POST':
         searched = request.POST['q']
-        patients = Patient.objects.filter(
+        doctors = Doctor.objects.filter(
             Q(first_name__icontains=searched)|
             Q(last_name__icontains= searched)
         )
 
-    return render(request, "search.html", {"searched": searched, "patients": patients })
+    return render(request, "search.html", {"searched": searched, "doctors": doctors })
 
 class GeneratePdf(View):
      def get(self, request, slug, *args, **kwargs):
