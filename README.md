@@ -1,0 +1,1 @@
+This is an API that displays Electronic Health Report(EHR). It allows a user(patient) to sign up, create an account to display their health profile. A doctor can also sign up, and prescribe medication(s) for existing patients. The patient can convert their profile, displaying their data along with any medication(s) prescribed into a pdf to share.
