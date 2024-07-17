@@ -83,3 +83,7 @@ class Prescriptions(models.Model):
 
     class Meta:
         verbose_name_plural = 'Prescriptions'
+
+class Document(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    docfile = models.FileField(upload_to='documents/%Y/%m/%d')

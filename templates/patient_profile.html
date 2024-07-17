@@ -45,6 +45,18 @@
             </ul>
             <hr>
             {% endfor %}
+            <br>
+            <hr>
+            <h3>Documents</h3>
+            {% for document in documents %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Document:</b>
+                     <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+            </li>
+                
+            </ul>
+            <hr>
+            {% endfor %}
             <hr>
                    
             {% if request.user == patient.user %}
@@ -52,6 +64,8 @@
                 <a href="{% url 'password_change' %}" >Change Password</a>
                 <a href="{% url 'generate-pdf' patient.slug %}">PDF <i class="fa-solid fa-file-pdf"></i> </a>
                 <hr>
+                <a href="{% url 'document-upload' %}" >Upload a document</a>
+
             {% endif %}
                 
             

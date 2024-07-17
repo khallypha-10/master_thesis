@@ -37,8 +37,25 @@
             <hr>
             
             {% endfor %}
+            <br>
+            <hr>
+            <h3>Documents</h3>
+            {% for document in documents %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Document:</b>
+                     <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+            </li>
+                
+            </ul>
+            <hr>
+            {% endfor %}
+            <hr>
+
+        
+
+
             {% endif %}
-                   
+
             {% if request.user == patient.user %}
                 <a href="{% url 'patient' patient.slug %}"> Update Details</a>
                 

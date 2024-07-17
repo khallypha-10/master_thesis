@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.contrib.staticfiles.urls import static
 
 urlpatterns = [
     path('home', views.home, name="home"),
@@ -20,6 +22,9 @@ urlpatterns = [
     path('doctor-delete/<username>', views.DoctorDelete.as_view(), name="doctor-delete"),
     path('prescribe/<slug>', views.create_prescription, name="prescribe"),
     path('search', views.search, name="search"),
-    path('pdf/<slug>', views.GeneratePdf.as_view(), name="generate-pdf"), 
-    
+    path('pdf/<slug>', views.GeneratePdf.as_view(), name="generate-pdf"),     
+    path('document-upload', views.list, name="document-upload"),     
 ]
+
+urlpatterns +=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_URL)

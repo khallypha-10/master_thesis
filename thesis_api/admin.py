@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Patient, Prescriptions, Doctor
+from . models import Patient, Prescriptions, Doctor, Document
 # Register your models here.
 
 @admin.register(Patient)
@@ -17,3 +17,7 @@ class PrescriptionAdmin(admin.ModelAdmin):
 class DoctorAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'specialization', 'language', 'email']
     search_fields = ['first_name', 'last_name', 'specialization']
+
+@admin.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ['docfile']

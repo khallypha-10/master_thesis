@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from . serializers import PatientSerializer, DoctorSerializer, UserSerializer
-from . models import Patient, Doctor, Prescriptions
+from . models import Patient, Doctor, Prescriptions, Document
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework.renderers import TemplateHTMLRenderer
 from django.shortcuts import get_object_or_404
-from . forms import PatientSignupForm, DoctorSignupForm, PrescriptionForm
+from . forms import PatientSignupForm, DoctorSignupForm, PrescriptionForm, DocumentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -20,7 +20,8 @@ from .process import html_to_pdf
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.contrib import messages
-# Create your views here.
+
+
 
 def home(request):
     patient = Patient.objects.all()
@@ -54,9 +55,29 @@ def doctor_register(request):
 def patient_profile(request, username):
     patient = Patient.objects.get(user=request.user)
     prescriptions = Prescriptions.objects.filter(prescribe_for=patient)
-    context = {"patient": patient, "prescriptions": prescriptions}
+    documents = Document.objects.filter(user__username=username)
+    context = {"patient": patient, "prescriptions": prescriptions, 'documents': documents}
     return render(request, "patient_profile.html", context)
     
+def list(request):
+    # Handle file upload
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            newdoc = Document(docfile = request.FILES['docfile'])
+            newdoc.user = request.user
+            newdoc.save()
+            # Redirect to the document list after POST
+            return redirect('home')
+    else:
+        form = DocumentForm() # A empty, unbound form
+
+    context = {'form': form}
+    # Render list page with the documents and the form
+    return render(request,'list.html', context)
+    
+
+
 
 class Profile(View):
     def get(self, request, *args, **kwargs):
@@ -154,8 +175,12 @@ class PatientRetrieve(LoginRequiredMixin,generics.RetrieveAPIView):
 
     def get(self, request, slug):
         queryset = Patient.objects.get(slug=slug)
-        prescriptions = Prescriptions.objects.filter(prescribe_for=queryset)
-        return Response({'patient': queryset, 'prescriptions': prescriptions})
+        prescriptions = Prescriptions.objects.filter(prescribe_for=queryset) 
+        documents = Document.objects.filter(user__patient=queryset)
+        return Response({'patient': queryset, 'prescriptions': prescriptions, 'documents': documents})
+
+
+        
 
 class DoctorRetrieve(generics.RetrieveAPIView):
     queryset = Doctor.objects.all()
@@ -221,12 +246,17 @@ class DoctorDelete(generics.RetrieveDestroyAPIView):
 def search(request):
     if request.method == 'POST':
         searched = request.POST['q']
+        patient_searched = request.POST['q']
         doctors = Doctor.objects.filter(
             Q(first_name__icontains=searched)|
             Q(last_name__icontains= searched)
         )
+        patients = Patient.objects.filter(
+            Q(first_name__icontains=patient_searched)|
+            Q(last_name__icontains= patient_searched)
+        )
 
-    return render(request, "search.html", {"searched": searched, "doctors": doctors })
+    return render(request, "search.html", {"searched": searched, "doctors": doctors, 'patients': patients, 'patient_searched': patient_searched })
 
 class GeneratePdf(View):
      def get(self, request, slug, *args, **kwargs):
@@ -239,3 +269,4 @@ class GeneratePdf(View):
          
          # rendering the template
         return HttpResponse(pdf, content_type='application/pdf')
+

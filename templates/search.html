@@ -24,13 +24,26 @@
                     <a href='{% url "doctor-details" doctor.slug %}'>View doctor Details</a>
                     <hr>
                     {% endfor %}
-                </ul>
-                {% else %}
-                <h1 class="heading-main">
                     
-                        <h1 class="heading-main">
-            
-                        No Result Found For "{{searched}}"
+                    
+                </ul>
+                    {% elif patients %}
+                <h1 class="heading-main">
+                    You searched for "{{patient_searched}}"
+                </h1>
+                    <ul>
+                        {% for patient in patients %}
+                        <li>{{ patient.first_name }} {{ patient.last_name }}</li>
+                        
+                
+                        <a href='{% url "patient-details" patient.slug %}'>View patient Details</a>
+                        <hr>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        No Result Found 
                 </h1>
                     {% endif %}
+
+                    
 {% endblock %}

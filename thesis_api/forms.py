@@ -50,3 +50,9 @@ class PrescriptionForm(ModelForm):
 
         self.fields['prescribe_for'].widget.attrs['class']= 'form-control'
         self.fields['medication'].widget.attrs['class']= 'form-control'
+
+class DocumentForm(forms.Form):
+    docfile = forms.FileField(
+        label='Select a file',
+        help_text='max. 42 megabytes'
+    )

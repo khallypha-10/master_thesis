@@ -14,6 +14,11 @@
 
 <div class="position-absolute top-15 end-50 ">
     <a href="{% url 'patients' %}"><button type="button" class="btn btn-outline-primary"> Patients</button></a>
+    <form class="d-flex" method="post" action="{% url 'search' %}">
+        {% csrf_token %}
+        <input name ="q" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button  class="btn btn-outline-success" type="submit">Search</button>
+      </form>
 </div>
 <h1>Doctor - {{ doctor.first_name }}</h1>
 
