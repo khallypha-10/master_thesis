@@ -23,7 +23,7 @@ urlpatterns = [
     path('prescribe/<slug>', views.create_prescription, name="prescribe"),
     path('search', views.search, name="search"),
     path('pdf/<slug>', views.GeneratePdf.as_view(), name="generate-pdf"),     
-    path('document-upload', views.list, name="document-upload"),     
+    path('document-uploadd', views.FileFieldFormView.as_view(), name="document-uploadd"),     
 ]
 
 urlpatterns +=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

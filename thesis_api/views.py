@@ -9,7 +9,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework.renderers import TemplateHTMLRenderer
 from django.shortcuts import get_object_or_404
-from . forms import PatientSignupForm, DoctorSignupForm, PrescriptionForm, DocumentForm
+from . forms import PatientSignupForm, DoctorSignupForm, PrescriptionForm, FileFieldForm
+from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -55,26 +56,25 @@ def doctor_register(request):
 def patient_profile(request, username):
     patient = Patient.objects.get(user=request.user)
     prescriptions = Prescriptions.objects.filter(prescribe_for=patient)
-    documents = Document.objects.filter(user__username=username)
+    documents = Document.objects.filter(user__username=username).order_by('-id')
     context = {"patient": patient, "prescriptions": prescriptions, 'documents': documents}
     return render(request, "patient_profile.html", context)
     
-def list(request):
-    # Handle file upload
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            newdoc = Document(docfile = request.FILES['docfile'])
-            newdoc.user = request.user
-            newdoc.save()
-            # Redirect to the document list after POST
-            return redirect('home')
-    else:
-        form = DocumentForm() # A empty, unbound form
 
-    context = {'form': form}
-    # Render list page with the documents and the form
-    return render(request,'list.html', context)
+
+
+class FileFieldFormView(FormView):
+    form_class = FileFieldForm
+    template_name = "list.html"  # Replace with your template.
+    success_url = "home"
+
+    def form_valid(self, form):
+        files = form.cleaned_data["file_field"]
+        for f in files:
+            newdoc = Document(docfile=f)
+            newdoc.user = User.objects.get(patient__user=self.request.user)
+            newdoc.save()
+        return super().form_valid(form)
     
 
 
