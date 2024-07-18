@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from . serializers import PatientSerializer, DoctorSerializer, UserSerializer
-from . models import Patient, Doctor, Prescriptions, Document
+from . models import Patient, Doctor, Prescriptions, Document, CompressedDICOMFile
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -21,7 +21,8 @@ from .process import html_to_pdf
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.contrib import messages
-
+from .compression import compress_dicom_jpeg2000
+import os
 
 
 def home(request):
@@ -70,12 +71,35 @@ class FileFieldFormView(FormView):
 
     def form_valid(self, form):
         files = form.cleaned_data["file_field"]
+        original_dir = os.path.join('media', 'original_dicom')
+        compressed_dir = os.path.join('media', 'compressed_dicom')
+        
+        # Ensure directories exist
+        os.makedirs(original_dir, exist_ok=True)
+        os.makedirs(compressed_dir, exist_ok=True)
+
         for f in files:
-            newdoc = Document(docfile=f)
+            # Save original file temporarily
+            original_path = os.path.join(original_dir, f.name)
+            with open(original_path, 'wb') as temp_file:
+                for chunk in f.chunks():
+                    temp_file.write(chunk)
+
+            # Compress file
+            compressed_file_path = os.path.join(compressed_dir, f.name)
+            compress_dicom_jpeg2000(original_path, compressed_file_path)
+
+            # Save to model
+            newdoc = CompressedDICOMFile(
+                original_file=f,
+                compressed_file=compressed_file_path
+            )
             newdoc.user = User.objects.get(patient__user=self.request.user)
             newdoc.save()
         return super().form_valid(form)
     
+
+
 
 
 

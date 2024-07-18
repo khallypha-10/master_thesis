@@ -87,3 +87,11 @@ class Prescriptions(models.Model):
 class Document(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     docfile = models.FileField(upload_to='documents/%Y/%m/%d')
+
+    def __str__(self):
+        return f"{self.user} || {self.docfile} ||"
+
+class CompressedDICOMFile(models.Model):
+    original_file = models.FileField(upload_to='original_dicom/')
+    compressed_file = models.FileField(upload_to='compressed_dicom/', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

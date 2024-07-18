@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Patient, Prescriptions, Doctor, Document
+from . models import Patient, Prescriptions, Doctor, Document, CompressedDICOMFile
 # Register your models here.
 
 @admin.register(Patient)
@@ -20,4 +20,9 @@ class DoctorAdmin(admin.ModelAdmin):
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ['docfile']
+    search_fields = ['user__username']
+
+@admin.register(CompressedDICOMFile)
+class CompressedDICOMFileAdmin(admin.ModelAdmin):
+    list_display = ['original_file', 'compressed_file']
+    
