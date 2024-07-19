@@ -51,7 +51,8 @@
             {% for document in documents %}
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><b>Document:</b>
-                     <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+                     <li>{{document.original_file}}<a href="{{ document.original_file.url }}">{{ document.original_file.name }}</a></li>
+                     <li>{{document.compressed_file}}<a href="{{ document.compressed_file.url }}">{{ document.compressed_file.name }}</a></li>
             </li>
                 
             </ul>

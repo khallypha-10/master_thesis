@@ -23,7 +23,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from .compression import compress_dicom_jpeg2000
 import os
-
+from django.conf import settings
 
 def home(request):
     patient = Patient.objects.all()
@@ -57,7 +57,7 @@ def doctor_register(request):
 def patient_profile(request, username):
     patient = Patient.objects.get(user=request.user)
     prescriptions = Prescriptions.objects.filter(prescribe_for=patient)
-    documents = Document.objects.filter(user__username=username).order_by('-id')
+    documents = CompressedDICOMFile.objects.filter(user__username=username).order_by('-id')
     context = {"patient": patient, "prescriptions": prescriptions, 'documents': documents}
     return render(request, "patient_profile.html", context)
     
@@ -71,9 +71,9 @@ class FileFieldFormView(FormView):
 
     def form_valid(self, form):
         files = form.cleaned_data["file_field"]
-        original_dir = os.path.join('media', 'original_dicom')
-        compressed_dir = os.path.join('media', 'compressed_dicom')
-        
+        original_dir = os.path.join(settings.MEDIA_ROOT, 'original_dicom')
+        compressed_dir = os.path.join(settings.MEDIA_ROOT, 'compressed_dicom')
+            
         # Ensure directories exist
         os.makedirs(original_dir, exist_ok=True)
         os.makedirs(compressed_dir, exist_ok=True)
@@ -92,10 +92,11 @@ class FileFieldFormView(FormView):
             # Save to model
             newdoc = CompressedDICOMFile(
                 original_file=f,
-                compressed_file=compressed_file_path
+                compressed_file=os.path.join('compressed_dicom', f.name)
             )
             newdoc.user = User.objects.get(patient__user=self.request.user)
             newdoc.save()
+
         return super().form_valid(form)
     
 
